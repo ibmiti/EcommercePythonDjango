@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from .forms import ContactForm
+from .forms import ContactForm, LoginForm
+
 
 def home_page(request):
     context = {
@@ -18,24 +19,47 @@ def about_page(request):
     return render(request, "home_page.html", context)
 
 def contact_page(request):
+
     contact_form = ContactForm(request.POST or None)
     context = {
-        "title": "Contact Page",
+        "title": "Contact",
         "content": "Welcome to the Contact Page",
         "form": contact_form
-    }# XXX:
+    }
     if contact_form.is_valid():
         print(contact_form.cleaned_data)
-    if request.method == " POST":
+    # if request.method == " POST":
         # print(request.POST)
-        print(request.POST.get('fullname'))
-        print(request.POST.get('email'))
-        print(request.POST.get('content'))
+        # print(request.POST.get('fullname'))
+        # print(request.POST.get('email'))
+        # print(request.POST.get('content'))
     return render(request, "contact/view.html", context)
 
 
-# def .. defining a constant that will hold the home_page-request and allow us to return html to that view
-# the 3 quotes will allow us to store multiple lines of html within its string
+def login_page(request):
+
+    form = LoginForm(request.POST or None)
+    print("User Logged In")
+    print(request.user.is_authenticated())
+    if form.is_valid():
+        print(form.cleaned_data)
+    context = {
+        "form": form
+        }
+
+    return render(request, "auth/login.html", context)
+
+
+
+
+
+def register_page(request):
+    form = registerForm(request.POST or None)
+    if form.is_valid():
+        print(form.cleaned_data)
+    return render(request , "auth/register.html", {})
+
+
 def home_page_old(request):
     html_ = """
     <!doctype html>
