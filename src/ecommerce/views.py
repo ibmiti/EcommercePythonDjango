@@ -39,14 +39,16 @@ def contact_page(request):
 def login_page(request):
 
     form = LoginForm(request.POST or None)
+    context = {
+            "form": form
+            }
+
     print("User Logged In")
     print(request.user.is_authenticated())
     if form.is_valid():
         print(form.cleaned_data)
-    context = {
-        "form": form
-        }
-
+        context['form'] = LoginForm()
+        
     return render(request, "auth/login.html", context)
 
 
