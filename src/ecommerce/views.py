@@ -1,5 +1,6 @@
+from django.contrib.auth import authenticate, login 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .forms import ContactForm, LoginForm
 
@@ -37,18 +38,28 @@ def contact_page(request):
 
 
 def login_page(request):
-
     form = LoginForm(request.POST or None)
     context = {
             "form": form
             }
-
     print("User Logged In")
-    print(request.user.is_authenticated())
+    # print(request.user.is_authenticated())
     if form.is_valid():
         print(form.cleaned_data)
-        context['form'] = LoginForm()
-        
+        username = form.cleaned_data.get("username")
+        password = form.cleaned_data.get("password")
+        user = authenticate(request, username=username, password=password)
+        # print(request.user.is_authenticated())
+        if user is not None:
+            # print(request.user.is_authenticated())
+            login(request, user)
+            # Redirect to a success page
+            # context['form'] = LoginForm()
+            return redirect("/login")
+        else:
+            # Return an 'invalid login' error messagese
+            print("Error")
+
     return render(request, "auth/login.html", context)
 
 
